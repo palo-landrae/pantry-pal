@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
+import { signOut } from "@/auth/AuthActions";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 export default function MainScreen() {
   return (
     <View style={styles.container}>
       <Text>Welcome to Pantry Pal</Text>
+      <Button onPress={signOut} title="Sign Out" />
     </View>
   );
 }

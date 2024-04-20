@@ -30,13 +30,11 @@ export async function signInWithEmail(email: string, password: string) {
 
 export async function signUpWithEmail({
   email,
-  firstName,
-  lastName,
+  name,
   password,
 }: {
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   password: string;
 }) {
   const { data, error: SignUpError } = await supabase.auth.signUp({
@@ -47,8 +45,7 @@ export async function signUpWithEmail({
   if (SignUpError) Alert.alert(SignUpError.message);
   const { error: InsertError } = await supabase.from("users").insert({
     id: data.user.id,
-    firstName,
-    lastName,
+    name,
     email,
     avatarUrl: "",
   });
