@@ -1,3 +1,6 @@
 export type BottomTabParamsList = {
-  Main: undefined;
+  Home: undefined;
+  Recipe: undefined;
+  Favourite: undefined;
+  Profile: undefined;
 };

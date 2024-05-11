@@ -35,6 +35,14 @@
       "eas": {
         "projectId": "05d379da-282e-4164-b537-b79803ae18f5"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/HindSiliguri-Regular.ttf"]
+        }
+      ]
+    ]
   }
 }

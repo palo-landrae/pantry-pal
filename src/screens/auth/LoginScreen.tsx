@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Button,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -50,7 +49,7 @@ export default function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#fffafa",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    backgroundColor: "#add8e6",
+    backgroundColor: "#FFA447",
     padding: 10,
     borderRadius: 20,
   },
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   textField: {
-    backgroundColor: "#cee5ed",
+    backgroundColor: "#fff",
     width: "100%",
     height: 36,
     borderRadius: 20,

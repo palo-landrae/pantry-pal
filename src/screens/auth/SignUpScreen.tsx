@@ -2,7 +2,6 @@ import { signUpWithEmail } from "@/auth/AuthActions";
 import { useState } from "react";
 import {
   Text,
-  Button,
   StyleSheet,
   TextInput,
   View,
@@ -48,7 +47,7 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#fffafa",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    backgroundColor: "#add8e6",
+    backgroundColor: "#B7E5B4",
     padding: 10,
     borderRadius: 20,
   },
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   textField: {
-    backgroundColor: "#cee5ed",
+    backgroundColor: "#fff",
     width: "100%",
     height: 36,
     borderRadius: 20,
