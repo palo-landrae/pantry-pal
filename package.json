@@ -7,17 +7,20 @@
     "android": "expo run:android"
   },
   "dependencies": {
+    "@expo-google-fonts/maven-pro": "^0.2.3",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "@supabase/supabase-js": "^2.42.5",
+    "@tanstack/react-query": "^5.35.5",
     "@types/react": "^18.2.79",
     "aes-js": "^3.1.2",
     "expo": "~50.0.14",
     "expo-font": "~11.10.3",
     "expo-secure-store": "^12.8.1",
     "expo-status-bar": "~1.11.1",
+    "formik": "^2.4.6",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-elements": "^3.4.3",
@@ -25,10 +28,13 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-url-polyfill": "^2.0.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "yup": "^1.4.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@tanstack/eslint-plugin-query": "^5.32.1",
     "babel-plugin-inline-dotenv": "^1.7.0",
     "babel-plugin-module-resolver": "^5.0.2"
   },

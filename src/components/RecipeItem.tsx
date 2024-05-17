@@ -10,10 +10,15 @@ const RecipeItem = (recipe: Recipe) => {
           uri: recipe.image_url,
         }}
       />
-      <View style={styles.contentContainer}>
-        <Text style={styles.cardTitle}>{recipe.recipe_name}</Text>
-        <Text style={styles.cardDescription} numberOfLines={1}>
-          {recipe.description}
+      <View style={{ flex: 1, padding: 4 }}>
+        <Text
+          style={{
+            fontFamily: "MavenPro_500Medium",
+            maxWidth: 80,
+            textAlign: "center",
+          }}
+        >
+          {recipe.recipe_name}
         </Text>
       </View>
     </View>
@@ -24,30 +29,20 @@ export default RecipeItem;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
-    flex: 1,
-    flexDirection: "row",
-    gap: 4,
-    borderRadius: 10,
-  },
-  contentContainer: {
-    flex: 1,
-    flexDirection: "column",
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  cardDescription: {
-    fontSize: 10,
-    width: "80%",
+    width: 120,
+    height: 150,
+    alignItems: "center",
+    borderColor: "#f3f3f3",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderRadius: 20,
+    margin: 2,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: "100%",
+    height: 100,
     resizeMode: "cover",
-    borderRadius: 12,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
 });

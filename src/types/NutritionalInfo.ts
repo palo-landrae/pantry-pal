@@ -1,6 +1,12 @@
 export type NutritionalInfo = {
   instruction_id: number;
   recipe_id: number;
-  step: number;
-  content: string;
+  calories: string;
+  fat: string;
+  saturated: string;
+  carbs: string;
+  fiber: string;
+  sugars: string;
+  protein: string;
+  sodium: string;
 };

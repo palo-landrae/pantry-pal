@@ -9,6 +9,8 @@ module.exports = function (api) {
           "@/lib": "./src/lib",
           "@/screens": "./src/screens",
           "@/types": "./src/types",
+          "@/api": "./src/api",
+          "@/components": "./src/components",
         },
         "extensions": [
           ".js",

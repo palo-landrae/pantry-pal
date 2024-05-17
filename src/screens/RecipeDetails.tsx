@@ -1,90 +1,61 @@
-import { supabase } from "@/lib/supabase";
 import { Instruction } from "@/types/Instruction";
 import { Ingredient } from "@/types/Ingredient";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useContext, useEffect, useState } from "react";
-import {
-  Alert,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { RecipeStackParamList } from "src/navigation/RecipeStackParamsList";
-import { AntDesign } from "@expo/vector-icons";
 import { AuthContext } from "@/auth/AuthContext";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { fetchIngredients } from "@/api/fetchIngredients";
+import { fetchInstructions } from "@/api/fetchInstructions";
+import { fetchNutritionalInfos } from "@/api/fetchNutritionalInfos";
+import IngredientItem from "@/components/IngredientItem";
+import FavouriteToggle from "@/components/FavouriteToggle";
+import InstructionItem from "@/components/InstructionItem";
+import { NutritionalInfo } from "@/types/NutritionalInfo";
+import NutrientItem from "@/components/NutrientItem";
 
 type Props = NativeStackScreenProps<RecipeStackParamList, "RecipeDetails">;
 
 export default function RecipeDetails({ route, navigation }: Props) {
   const { recipe } = route.params;
   const { user } = useContext(AuthContext);
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [instructions, setInstructions] = useState<Instruction[]>([]);
-  const [isFavourite, setIsFavourite] = useState<boolean>(false);
 
-  useEffect(() => {
-    fetchRecipeDetails();
-  }, []);
+  const { data: ingredients = [] } = useQuery<Ingredient[]>({
+    queryKey: ["ingredients", recipe.recipe_id],
+    queryFn: fetchIngredients,
+  });
 
-  const fetchRecipeDetails = async () => {
-    const { data } = await supabase
-      .from("favourites")
-      .select("*")
-      .eq("recipe_id", recipe.recipe_id)
-      .eq("user_id", user.id);
+  const { data: instructions = [] } = useQuery<Instruction[]>({
+    queryKey: ["instructions", recipe.recipe_id],
+    queryFn: fetchInstructions,
+  });
 
-    setIsFavourite(data.length >= 1);
-
-    const { data: ingredientData } = await supabase
-      .from("ingredients")
-      .select("*")
-      .eq("recipe_id", recipe.recipe_id);
-    setIngredients(ingredientData);
-
-    const { data: instructionData } = await supabase
-      .from("instructions")
-      .select("*")
-      .eq("recipe_id", recipe.recipe_id);
-    setInstructions(instructionData);
-  };
-
-  const handleFavourite = async () => {
-    const newIsFavourite = !isFavourite;
-    setIsFavourite(newIsFavourite);
-
-    if (!newIsFavourite) {
-      const { error } = await supabase
-        .from("favourites")
-        .delete()
-        .eq("recipe_id", recipe.recipe_id)
-        .eq("user_id", user.id);
-      if (error) {
-        Alert.alert(error.message);
-        setIsFavourite(!newIsFavourite);
-      }
-    } else {
-      const { error } = await supabase
-        .from("favourites")
-        .insert({ recipe_id: recipe.recipe_id, user_id: user.id });
-
-      if (error) {
-        Alert.alert(error.message);
-        setIsFavourite(!newIsFavourite);
-      }
-    }
-  };
+  const { data: nutrients } = useQuery<NutritionalInfo>({
+    queryKey: ["nutrients", recipe.recipe_id],
+    queryFn: fetchNutritionalInfos,
+  });
 
   return (
-    <ScrollView style={styles.container}>
-      <Image
-        style={styles.image}
-        source={{
-          uri: recipe.image_url,
-        }}
-      />
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
+      <View style={{ flex: 1 }}>
+        <Image
+          style={styles.image}
+          source={{
+            uri: recipe.image_url,
+          }}
+        />
+        <View
+          style={{
+            height: 24,
+            backgroundColor: "white",
+            zIndex: 1,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            marginTop: -40,
+          }}
+        />
+      </View>
       <View style={styles.innerContainer}>
         <View
           style={{
@@ -96,59 +67,66 @@ export default function RecipeDetails({ route, navigation }: Props) {
           }}
         >
           <Text style={styles.title}>{recipe.recipe_name}</Text>
-          <TouchableOpacity onPress={handleFavourite}>
-            <AntDesign
-              name={isFavourite ? "heart" : "hearto"}
-              size={20}
-              color={"black"}
-            />
-          </TouchableOpacity>
+          <FavouriteToggle recipe_id={recipe.recipe_id} user_id={user.id} />
         </View>
-        <Text>{recipe.description}</Text>
+        <Text style={styles.description}>{recipe.description}</Text>
+        {nutrients && (
+          <View style={styles.nutrientsContainer}>
+            <NutrientItem title="Calories" value={nutrients.calories} />
+            <NutrientItem title="Carbs" value={nutrients.carbs} />
+            <NutrientItem title="Fats" value={nutrients.fat} />
+            <NutrientItem title="Protein" value={nutrients.protein} />
+          </View>
+        )}
         <Text style={styles.subtitle}>Ingredients</Text>
         {ingredients &&
           ingredients.map((item) => (
-            <TouchableOpacity onPress={() => console.log(item.ingredient_name)}>
-              <Text key={item.ingredient_id}>
-                {item.quantity} {item.measurement_unit} - {item.ingredient_name}
-              </Text>
-            </TouchableOpacity>
+            <IngredientItem key={item.ingredient_id} {...item} />
           ))}
         <Text style={styles.subtitle}>Instructions</Text>
-        {instructions &&
-          instructions.map((item) => (
-            <Text key={item.instruction_id}>
-              {item.step} - {item.content}
-            </Text>
-          ))}
+        <View style={{ paddingHorizontal: 4, flex: 1 }}>
+          {instructions &&
+            instructions.map((item) => (
+              <InstructionItem key={item.instruction_id} {...item} />
+            ))}
+        </View>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { backgroundColor: "red" },
   innerContainer: {
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "flex-start",
-    gap: 2,
     backgroundColor: "white",
-    padding: 20,
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
+    fontFamily: "MavenPro_500Medium",
+  },
+  description: {
+    fontSize: 14,
+    color: "#a2a2a2",
   },
   subtitle: {
     fontSize: 18,
+    marginTop: 20,
+    fontFamily: "MavenPro_500Medium",
   },
   image: {
-    width: 200,
-    height: 200,
-    borderRadius: 40,
+    width: "100%",
+    height: 300,
     resizeMode: "cover",
+  },
+  nutrientsContainer: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 4,
+    marginTop: 20,
   },
 });

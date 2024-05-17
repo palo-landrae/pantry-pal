@@ -15,7 +15,13 @@
         "src/types/*"
       ],
       "@/screens/*": [
-        "src/screens/*"
+        "src/screens/*"      
+      ],
+      "@/api/*": [
+        "src/api/*"
+      ],
+      "@/components/*": [
+        "src/components/*"
       ]
     }
   },

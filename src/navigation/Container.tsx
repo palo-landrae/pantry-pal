@@ -1,8 +1,9 @@
 import React from "react";
 import AuthProvider from "@/auth/AuthProvider";
 import { NavigationContainer } from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useFonts, MavenPro_500Medium } from "@expo-google-fonts/maven-pro";
 
 type AppContainerProps = {
   children: React.ReactNode;
@@ -10,16 +11,23 @@ type AppContainerProps = {
 
 const Container: React.FC<AppContainerProps> = ({ children }) => {
   const [loaded] = useFonts({
-    HindSiliguri: require("../../assets/fonts/HindSiliguri-Regular.ttf"),
+    MavenPro_500Medium,
   });
+  const queryClient = new QueryClient();
 
   if (!loaded) {
-    return <View></View>;
+    return (
+      <View>
+        <ActivityIndicator />
+      </View>
+    );
   }
   return (
-    <NavigationContainer>
-      <AuthProvider>{children}</AuthProvider>
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <AuthProvider>{children}</AuthProvider>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 };
 

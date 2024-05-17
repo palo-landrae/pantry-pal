@@ -28,6 +28,31 @@ export async function signInWithEmail(email: string, password: string) {
   if (error) Alert.alert(error.message);
 }
 
+export async function signInWithUsernameAndPassword(
+  username: string,
+  password: string,
+) {
+  console.log(username, password);
+  const { data, error: UsernameError } = await supabase
+    .from("users")
+    .select("email")
+    .eq("username", username)
+    .returns<{ email: string }[]>();
+
+  if (UsernameError) Alert.alert(UsernameError.message);
+
+  if (data === undefined || data.length === 0)
+    return Alert.alert("Invalid login credentials");
+
+  const { email } = data[0];
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
+  if (error) Alert.alert(error.message);
+}
+
 export async function signUpWithEmail({
   email,
   name,

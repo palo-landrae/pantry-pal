@@ -1,56 +1,73 @@
-import { supabase } from "@/lib/supabase";
+import { fetchFavouriteRecipes } from "@/api/fetchFavouriteRecipes";
+import { fetchUserData } from "@/api/fetchUserData";
 import { Recipe } from "@/types/Recipe";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { FlatList, View } from "react-native";
 import RecipeItem from "src/components/RecipeItem";
 
 export default function FavouriteScreen() {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const isFocused = useIsFocused();
+  const user = fetchUserData();
+  const {
+    data: favourites = [],
+    isLoading,
+    error,
+  } = useQuery<Recipe[], Error>({
+    queryKey: ["favourites", user.id],
+    queryFn: fetchFavouriteRecipes,
+    enabled: isFocused,
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      const unsubscribe = fetchRecipes();
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
-      return () => unsubscribe;
-    }, []),
-  );
-
-  const fetchRecipes = async () => {
-    const { data } = await supabase.from("favourites").select(`*, recipes (*)`);
-    setRecipes(data.map((item) => item.recipes));
-  };
+  if (error) {
+    return <Text>{error.message}</Text>;
+  }
 
   return (
     <View style={styles.container}>
-      <Text>Favourites</Text>
-      {recipes && (
+      <Text style={styles.title}>Favourites</Text>
+      {favourites.length !== 0 ? (
         <FlatList
-          data={recipes}
           style={styles.flatlist}
-          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-          renderItem={({ item }) => (
-            <TouchableOpacity>
-              <RecipeItem {...item} />
-            </TouchableOpacity>
-          )}
+          data={favourites}
+          numColumns={2}
+          renderItem={({ item }) => <RecipeItem {...item} />}
           keyExtractor={(item) => item.recipe_id.toString()}
         />
+      ) : (
+        <Text>No recipe has been selected yet.</Text>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  flatlist: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    backgroundColor: "white",
-    paddingHorizontal: 24,
     paddingVertical: 40,
-    gap: 8,
+    backgroundColor: "white",
+    alignItems: "center",
+  },
+  title: {
+    fontFamily: "MavenPro_500Medium",
+    fontSize: 28,
+    paddingVertical: 20,
+  },
+  flatlist: {
+    flex: 1,
+    paddingBottom: 70,
+    marginVertical: 10,
+    alignSelf: "baseline",
+    paddingHorizontal: 40,
   },
 });

@@ -1,19 +1,19 @@
 import { BottomTabParamsList } from "./BottomTabParamsList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import MainScreen from "@/screens/MainScreen";
 
 import { Feather } from "@expo/vector-icons";
-import { FontAwesome6 } from "@expo/vector-icons";
 import ProfileScreen from "@/screens/ProfileScreen";
 import RecipeStack from "./RecipeStack";
 import FavouriteScreen from "@/screens/FavouriteScreen";
+import CategoryScreen from "@/screens/CategoryScreen";
+import { COLORS } from "@/types/Colors";
 
 const Tab = createBottomTabNavigator<BottomTabParamsList>();
 
 export default function BottomTabNavigator() {
   return (
     <Tab.Navigator
-      initialRouteName="Main"
+      initialRouteName="Home"
       screenOptions={{
         tabBarStyle: {
           padding: 4,
@@ -26,6 +26,7 @@ export default function BottomTabNavigator() {
           overflow: "hidden",
         },
         tabBarHideOnKeyboard: true,
+        unmountOnBlur: true,
       }}
     >
       <Tab.Screen
@@ -37,20 +38,20 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size - 2} color={color} />
           ),
-          tabBarActiveTintColor: "#f28585",
+          tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
       />
       <Tab.Screen
         name="Recipe"
-        component={MainScreen}
+        component={CategoryScreen}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="bowl-food" size={size - 2} color={color} />
+            <Feather name="grid" size={size - 2} color={color} />
           ),
-          tabBarActiveTintColor: "#F28585",
+          tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
       />
@@ -64,7 +65,7 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Feather name="heart" size={size - 2} color={color} />
           ),
-          tabBarActiveTintColor: "#F28585",
+          tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
       />
@@ -78,7 +79,7 @@ export default function BottomTabNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Feather name="user" size={size - 2} color={color} />
           ),
-          tabBarActiveTintColor: "#F28585",
+          tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
       />
