@@ -7,6 +7,7 @@ import RecipeStack from "./RecipeStack";
 import FavouriteScreen from "@/screens/FavouriteScreen";
 import CategoryScreen from "@/screens/CategoryScreen";
 import { COLORS } from "@/types/Colors";
+import CategoryStack from "./CategoryStack";
 
 const Tab = createBottomTabNavigator<BottomTabParamsList>();
 
@@ -44,7 +45,7 @@ export default function BottomTabNavigator() {
       />
       <Tab.Screen
         name="Recipe"
-        component={CategoryScreen}
+        component={CategoryStack}
         options={{
           headerShown: false,
           tabBarShowLabel: false,

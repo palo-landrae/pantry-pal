@@ -1,7 +1,11 @@
-import CategoryCard from "@/components/CategoryCard";
+import { fetchFoodsByCategory } from "@/api/fetchFoodsByCategory";
+import FoodItem from "@/components/FoodItem";
 import { COLORS } from "@/types/Colors";
+import { Food } from "@/types/Food";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useQuery } from "@tanstack/react-query";
 import {
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
@@ -9,61 +13,38 @@ import {
   View,
 } from "react-native";
 import { CategoryStackParamList } from "src/navigation/CategoryStackParamsList";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const categories = [
-  {
-    category_name: "Fruits",
-    category_icon: require("../../assets/images/categories/fruits.jpg"),
-  },
-  {
-    category_name: "Vegetables",
-    category_icon: require("../../assets/images/categories/broccoli.jpg"),
-  },
-  {
-    category_name: "Dairy",
-    category_icon: require("../../assets/images/categories/dairy.jpg"),
-  },
-  {
-    category_name: "Beef",
-    category_icon: require("../../assets/images/categories/beef.jpg"),
-  },
-  {
-    category_name: "Chicken",
-    category_icon: require("../../assets/images/categories/chicken.jpg"),
-  },
-  {
-    category_name: "Pork",
-    category_icon: require("../../assets/images/categories/pork.jpg"),
-  },
-  {
-    category_name: "Bread",
-    category_icon: require("../../assets/images/categories/bread.png"),
-  },
-];
+type Props = NativeStackScreenProps<CategoryStackParamList, "FoodList">;
 
-type Props = NativeStackScreenProps<CategoryStackParamList, "CategoryMain">;
+export default function FoodListScreen({ route }: Props) {
+  const { category } = route.params;
 
-export default function CategoryScreen({ navigation }: Props) {
+  const {
+    data: foods = [],
+    isLoading,
+    error,
+  } = useQuery<Food[], Error>({
+    queryKey: ["foods", category.toLowerCase()],
+    queryFn: fetchFoodsByCategory,
+  });
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Categories</Text>
+      <Text style={styles.title}>{category}</Text>
+      {isLoading && <ActivityIndicator />}
       <FlatList
         style={styles.flatlist}
-        data={categories}
-        numColumns={2}
+        data={foods}
         renderItem={({ item }) => (
           <TouchableOpacity
-            key={item.category_name}
-            onPress={() =>
-              navigation.navigate("FoodList", { category: item.category_name })
-            }
+            key={item.food_id}
+            onPress={() => console.log(item.food_name)}
           >
-            <CategoryCard {...item} />
+            <FoodItem {...item} />
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => item.category_name}
+        keyExtractor={(item) => item.food_id.toString()}
       />
-
       <View style={{ flexDirection: "row", gap: 4 }}>
         <TouchableOpacity
           style={[styles.buttonContainer, { backgroundColor: COLORS.primary }]}
@@ -96,10 +77,7 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     flex: 1,
-    paddingBottom: 70,
-    marginVertical: 10,
   },
-
   buttonContainer: {
     backgroundColor: COLORS.primary,
     padding: 10,
