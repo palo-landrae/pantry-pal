@@ -28,8 +28,8 @@ export default function CategoryCard(props: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 120,
-    height: 140,
+    width: 100,
+    height: 120,
     justifyContent: "center",
     alignItems: "center",
     borderColor: "#f3f3f3",

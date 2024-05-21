@@ -1,4 +1,5 @@
 import CategoryCard from "@/components/CategoryCard";
+import ViewFridge from "@/components/ViewFridge";
 import { COLORS } from "@/types/Colors";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
@@ -50,7 +51,7 @@ export default function CategoryScreen({ navigation }: Props) {
       <FlatList
         style={styles.flatlist}
         data={categories}
-        numColumns={2}
+        numColumns={3}
         renderItem={({ item }) => (
           <TouchableOpacity
             key={item.category_name}
@@ -65,11 +66,8 @@ export default function CategoryScreen({ navigation }: Props) {
       />
 
       <View style={{ flexDirection: "row", gap: 4 }}>
-        <TouchableOpacity
-          style={[styles.buttonContainer, { backgroundColor: COLORS.primary }]}
-        >
-          <Text style={styles.buttonText}>View Fridge</Text>
-          <Text style={styles.buttonText}>| 3 items</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("FridgeList")}>
+          <ViewFridge />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.buttonContainer, { backgroundColor: COLORS.accent }]}
@@ -99,7 +97,6 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
     marginVertical: 10,
   },
-
   buttonContainer: {
     backgroundColor: COLORS.primary,
     padding: 10,

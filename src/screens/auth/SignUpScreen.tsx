@@ -1,5 +1,4 @@
 import { signUpWithEmail } from "@/auth/AuthActions";
-import { useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -33,7 +32,7 @@ export default function SignUpScreen() {
       onSubmit={(values: FormikValues) =>
         signUpWithEmail({
           email: values.email,
-          name: values.username,
+          username: values.username,
           password: values.password,
         })
       }

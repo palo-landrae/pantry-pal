@@ -32,7 +32,6 @@ export async function signInWithUsernameAndPassword(
   username: string,
   password: string,
 ) {
-  console.log(username, password);
   const { data, error: UsernameError } = await supabase
     .from("users")
     .select("email")
@@ -55,11 +54,11 @@ export async function signInWithUsernameAndPassword(
 
 export async function signUpWithEmail({
   email,
-  name,
+  username,
   password,
 }: {
   email: string;
-  name: string;
+  username: string;
   password: string;
 }) {
   const { data, error: SignUpError } = await supabase.auth.signUp({
@@ -70,7 +69,7 @@ export async function signUpWithEmail({
   if (SignUpError) Alert.alert(SignUpError.message);
   const { error: InsertError } = await supabase.from("users").insert({
     id: data.user.id,
-    name,
+    username,
     email,
     avatarUrl: "",
   });
