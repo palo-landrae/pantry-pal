@@ -43,8 +43,8 @@ export default function LoginScreen({ navigation }: Props) {
               alignSelf: "center",
             }}
           />
-          <Text style={styles.title}>Pantry Pal</Text>
-          <Text style={styles.subtitle}>Delicious food for you!</Text>
+          <Text style={styles.title}>PantryPal</Text>
+          <Text style={styles.subtitle}>Wholesome and Healthy Recipes</Text>
           {/* Email */}
           <View style={styles.inputContainer}>
             <Feather name="user" color="black" size={16} />
