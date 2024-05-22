@@ -1,7 +1,10 @@
 import CategoryCard from "@/components/CategoryCard";
+import FindRecipes from "@/components/FindRecipes";
 import ViewFridge from "@/components/ViewFridge";
+import { FoodContext } from "@/lib/FoodContext";
 import { COLORS } from "@/types/Colors";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useContext } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -9,70 +12,59 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { CategoryStackParamList } from "src/navigation/CategoryStackParamsList";
-
-const categories = [
-  {
-    category_name: "Fruits",
-    category_icon: require("../../assets/images/categories/fruits.jpg"),
-  },
-  {
-    category_name: "Vegetables",
-    category_icon: require("../../assets/images/categories/broccoli.jpg"),
-  },
-  {
-    category_name: "Dairy",
-    category_icon: require("../../assets/images/categories/dairy.jpg"),
-  },
-  {
-    category_name: "Beef",
-    category_icon: require("../../assets/images/categories/beef.jpg"),
-  },
-  {
-    category_name: "Chicken",
-    category_icon: require("../../assets/images/categories/chicken.jpg"),
-  },
-  {
-    category_name: "Pork",
-    category_icon: require("../../assets/images/categories/pork.jpg"),
-  },
-  {
-    category_name: "Bread",
-    category_icon: require("../../assets/images/categories/bread.png"),
-  },
-];
+import { CategoryStackParamList } from "src/navigation/category/CategoryStackParamsList";
+import { categories } from "./category/categories";
+import { useQuery } from "@tanstack/react-query";
+import { fetchFilteredRecipeByFood } from "@/api/fetchFilteredRecipeByFood";
 
 type Props = NativeStackScreenProps<CategoryStackParamList, "CategoryMain">;
 
 export default function CategoryScreen({ navigation }: Props) {
+  const { foods } = useContext(FoodContext);
+
+  const { data: recipes = [] } = useQuery({
+    queryKey: ["filteredRecipes", foods.map((food) => food.food_id)],
+    queryFn: fetchFilteredRecipeByFood,
+    enabled: foods.length > 0,
+  });
+
+  const handleFindRecipes = async () => {
+    navigation.navigate("FilteredRecipes", { recipes });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Categories</Text>
-      <FlatList
-        style={styles.flatlist}
-        data={categories}
-        numColumns={3}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            key={item.category_name}
-            onPress={() =>
-              navigation.navigate("FoodList", { category: item.category_name })
-            }
-          >
-            <CategoryCard {...item} />
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item.category_name}
-      />
+      <View style={styles.flatlistContainer}>
+        <FlatList
+          data={categories}
+          numColumns={3}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              key={item.category_name}
+              onPress={() =>
+                navigation.navigate("FoodList", {
+                  category: item.category_name,
+                })
+              }
+              style={{ maxWidth: "33%", width: "100%" }}
+            >
+              <CategoryCard {...item} />
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.category_name}
+        />
+      </View>
 
       <View style={{ flexDirection: "row", gap: 4 }}>
         <TouchableOpacity onPress={() => navigation.navigate("FridgeList")}>
           <ViewFridge />
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.buttonContainer, { backgroundColor: COLORS.accent }]}
+          disabled={foods.length === 0}
+          onPress={() => handleFindRecipes()}
         >
-          <Text style={styles.buttonText}>Find Recipes</Text>
+          <FindRecipes isDisabled={foods.length === 0} />
         </TouchableOpacity>
       </View>
     </View>
@@ -87,15 +79,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  flatlistContainer: {
+    flex: 3,
+    marginHorizontal: "auto",
+    width: "100%",
+    paddingBottom: 70,
+    marginVertical: 10,
+    gap: 4,
+  },
   title: {
     fontFamily: "MavenPro_500Medium",
     fontSize: 28,
     paddingVertical: 20,
-  },
-  flatlist: {
-    flex: 1,
-    paddingBottom: 70,
-    marginVertical: 10,
   },
   buttonContainer: {
     backgroundColor: COLORS.primary,

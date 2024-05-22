@@ -1,19 +1,19 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RecipeStackParamList } from "./RecipeStackParamsList";
-import HomeScreen from "@/screens/HomeScreen";
 import RecipeDetails from "@/screens/RecipeDetails";
-import { Button, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { COLORS } from "@/types/Colors";
 import { Feather } from "@expo/vector-icons";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { FavouriteStackParamsList } from "./FavouriteStackParamsList";
+import FavouriteScreen from "@/screens/FavouriteScreen";
 
-const Stack = createNativeStackNavigator<RecipeStackParamList>();
+const Stack = createNativeStackNavigator<FavouriteStackParamsList>();
 
-export default function RecipeStack() {
+export default function FavouriteStack() {
   return (
-    <Stack.Navigator initialRouteName="Main">
+    <Stack.Navigator initialRouteName="FavouriteMain">
       <Stack.Screen
-        name="Main"
-        component={HomeScreen}
+        name="FavouriteMain"
+        component={FavouriteScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

@@ -10,11 +10,18 @@ const RecipeItem = (recipe: Recipe) => {
           uri: recipe.image_url,
         }}
       />
-      <View style={{ flex: 1, padding: 4 }}>
+      <View
+        style={{
+          flex: 1,
+          padding: 4,
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Text
           style={{
             fontFamily: "MavenPro_500Medium",
-            maxWidth: 80,
             textAlign: "center",
           }}
         >
@@ -29,7 +36,8 @@ export default RecipeItem;
 
 const styles = StyleSheet.create({
   container: {
-    width: 120,
+    flex: 1,
+    width: "98%",
     height: 150,
     alignItems: "center",
     borderColor: "#f3f3f3",

@@ -66,14 +66,14 @@ export async function signUpWithEmail({
     password: password,
   });
 
-  if (SignUpError) Alert.alert(SignUpError.message);
+  if (SignUpError) return Alert.alert(SignUpError.message);
   const { error: InsertError } = await supabase.from("users").insert({
     id: data.user.id,
     username,
     email,
     avatarUrl: "",
   });
-  if (InsertError) Alert.alert(InsertError.message);
+  if (InsertError) return Alert.alert(InsertError.message);
 }
 
 export function signOut() {

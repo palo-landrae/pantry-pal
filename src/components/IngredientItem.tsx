@@ -1,10 +1,10 @@
 import { Ingredient } from "@/types/Ingredient";
-import { StyleSheet, Text, View, Image, TextBase } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 const IngredientItem = (ingredient: Ingredient) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.ingredientLabel}>{ingredient.ingredient_name}</Text>
+      <Text style={styles.ingredientLabel}>{ingredient.foods.food_name}</Text>
       <View style={styles.amountContainer}>
         <Text style={styles.ingredientQuantity}>{ingredient.quantity}</Text>
         <Text style={styles.ingredientQuantity}>

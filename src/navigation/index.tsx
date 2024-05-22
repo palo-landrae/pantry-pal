@@ -1,8 +1,8 @@
 import { useContext } from "react";
 
 import { AuthContext } from "@/auth/AuthContext";
-import AuthStack from "./AuthStack";
-import BottomTabNavigator from "./BottomTab";
+import AuthStack from "./auth/AuthStack";
+import BottomTabNavigator from "./tabs/BottomTab";
 
 export default () => {
   const { isRecovery, user } = useContext(AuthContext);

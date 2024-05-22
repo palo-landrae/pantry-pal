@@ -1,7 +1,10 @@
 import { fetchFavouriteRecipes } from "@/api/fetchFavouriteRecipes";
 import { fetchUserData } from "@/api/fetchUserData";
+import EmptyFavourites from "@/components/EmptyFavourites";
+import RecipeRow from "@/components/RecipeRow";
 import { Recipe } from "@/types/Recipe";
 import { useIsFocused } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useQuery } from "@tanstack/react-query";
 import {
   ActivityIndicator,
@@ -10,9 +13,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { FlatList, View } from "react-native";
-import RecipeItem from "src/components/RecipeItem";
+import { FavouriteStackParamsList } from "src/navigation/favourites/FavouriteStackParamsList";
 
-export default function FavouriteScreen() {
+type Props = NativeStackScreenProps<FavouriteStackParamsList, "FavouriteMain">;
+
+export default function FavouriteScreen({ navigation }: Props) {
   const isFocused = useIsFocused();
   const user = fetchUserData();
   const {
@@ -33,20 +38,26 @@ export default function FavouriteScreen() {
     return <Text>{error.message}</Text>;
   }
 
+  const handleRecipeDetail = (recipe: Recipe) => {
+    navigation.navigate("RecipeDetails", { recipe });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Favourites</Text>
-      {favourites.length !== 0 ? (
-        <FlatList
-          style={styles.flatlist}
-          data={favourites}
-          numColumns={2}
-          renderItem={({ item }) => <RecipeItem {...item} />}
-          keyExtractor={(item) => item.recipe_id.toString()}
-        />
-      ) : (
-        <Text>No recipe has been selected yet.</Text>
-      )}
+      <FlatList
+        data={favourites}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            key={item.recipe_id}
+            onPress={() => handleRecipeDetail(item)}
+          >
+            <RecipeRow {...item} />
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item) => item.recipe_id.toString()}
+        ListEmptyComponent={<EmptyFavourites />}
+      />
     </View>
   );
 }
@@ -54,20 +65,15 @@ export default function FavouriteScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 40,
-    backgroundColor: "white",
+    paddingVertical: 60,
+    paddingHorizontal: 20,
+    justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "white",
   },
   title: {
     fontFamily: "MavenPro_500Medium",
     fontSize: 28,
     paddingVertical: 20,
-  },
-  flatlist: {
-    flex: 1,
-    paddingBottom: 70,
-    marginVertical: 10,
-    alignSelf: "baseline",
-    paddingHorizontal: 40,
   },
 });

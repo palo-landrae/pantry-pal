@@ -6,4 +6,5 @@ export type Recipe = {
   servings: number;
   image_url: string;
   description: string;
+  matched_foods_count?: number;
 };

@@ -28,19 +28,20 @@ export default function CategoryCard(props: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 100,
-    height: 120,
+    flex: 1,
+    width: "98%",
+    height: 100,
     justifyContent: "center",
     alignItems: "center",
     borderColor: "#f3f3f3",
     borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 20,
-    margin: 2,
+    margin: 1,
   },
   image: {
-    width: "80%",
-    height: "80%",
+    width: 70,
+    height: 70,
     resizeMode: "contain",
   },
 });

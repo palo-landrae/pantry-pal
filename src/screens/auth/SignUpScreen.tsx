@@ -12,6 +12,7 @@ import { Formik } from "formik";
 import { signUpValidationSchema } from "src/schema/signUpValidationSchema";
 import { Feather } from "@expo/vector-icons";
 import { COLORS } from "@/types/Colors";
+import { useState } from "react";
 
 type FormikValues = {
   username: string;
@@ -21,6 +22,7 @@ type FormikValues = {
 };
 
 export default function SignUpScreen() {
+  const [visible, setVisible] = useState<boolean>(false);
   return (
     <Formik
       initialValues={{
@@ -90,10 +92,15 @@ export default function SignUpScreen() {
               style={styles.inputField}
               textContentType="password"
               value={values.password}
-              secureTextEntry={true}
+              secureTextEntry={!visible}
               onChangeText={handleChange("password")}
               placeholder="Password"
             />
+            <TouchableOpacity
+              onPress={() => setVisible((prevState) => !prevState)}
+            >
+              <Feather name={visible ? "eye" : "eye-off"} size={14} />
+            </TouchableOpacity>
           </View>
           {!!errors.password && (
             <Text style={styles.error}>{errors.password}</Text>
@@ -106,10 +113,15 @@ export default function SignUpScreen() {
               style={styles.inputField}
               textContentType="password"
               value={values.confirmPassword}
-              secureTextEntry={true}
+              secureTextEntry={!visible}
               placeholder="Re-type password"
               onChangeText={handleChange("confirmPassword")}
             />
+            <TouchableOpacity
+              onPress={() => setVisible((prevState) => !prevState)}
+            >
+              <Feather name={visible ? "eye" : "eye-off"} size={14} />
+            </TouchableOpacity>
           </View>
           {!!errors.confirmPassword && (
             <Text style={styles.error}>{errors.confirmPassword}</Text>

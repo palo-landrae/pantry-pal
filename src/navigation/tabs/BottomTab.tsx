@@ -1,15 +1,17 @@
 import { BottomTabParamsList } from "./BottomTabParamsList";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
-import { Feather } from "@expo/vector-icons";
-import ProfileScreen from "@/screens/ProfileScreen";
-import RecipeStack from "./RecipeStack";
-import FavouriteScreen from "@/screens/FavouriteScreen";
-import CategoryScreen from "@/screens/CategoryScreen";
+import {
+  BottomTabScreenProps,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import { COLORS } from "@/types/Colors";
-import CategoryStack from "./CategoryStack";
+import { Feather } from "@expo/vector-icons";
+import RecipeStack from "../recipe/RecipeStack";
+import CategoryStack from "../category/CategoryStack";
+import FavouriteStack from "../favourites/FavouritesStack";
+import ProfileStack from "../profile/ProfileStack";
 
 const Tab = createBottomTabNavigator<BottomTabParamsList>();
+type NavigationProps = BottomTabScreenProps<BottomTabParamsList>;
 
 export default function BottomTabNavigator() {
   return (
@@ -27,7 +29,6 @@ export default function BottomTabNavigator() {
           overflow: "hidden",
         },
         tabBarHideOnKeyboard: true,
-        unmountOnBlur: true,
       }}
     >
       <Tab.Screen
@@ -42,9 +43,14 @@ export default function BottomTabNavigator() {
           tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
+        listeners={({ navigation }: NavigationProps) => ({
+          tabPress: () => {
+            navigation.jumpTo("Home", { screen: "Main" });
+          },
+        })}
       />
       <Tab.Screen
-        name="Recipe"
+        name="Category"
         component={CategoryStack}
         options={{
           headerShown: false,
@@ -55,11 +61,16 @@ export default function BottomTabNavigator() {
           tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
+        listeners={({ navigation }: NavigationProps) => ({
+          tabPress: () => {
+            navigation.jumpTo("Category", { screen: "CategoryMain" });
+          },
+        })}
       />
 
       <Tab.Screen
         name="Favourite"
-        component={FavouriteScreen}
+        component={FavouriteStack}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
@@ -69,11 +80,16 @@ export default function BottomTabNavigator() {
           tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
+        listeners={({ navigation }: NavigationProps) => ({
+          tabPress: () => {
+            navigation.jumpTo("Favourite", { screen: "FavouriteMain" });
+          },
+        })}
       />
 
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStack}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
@@ -83,6 +99,11 @@ export default function BottomTabNavigator() {
           tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: "gray",
         }}
+        listeners={({ navigation }: NavigationProps) => ({
+          tabPress: () => {
+            navigation.jumpTo("Profile", { screen: "ProfileMain" });
+          },
+        })}
       />
     </Tab.Navigator>
   );

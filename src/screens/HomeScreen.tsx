@@ -6,19 +6,27 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useState, useMemo } from "react";
 import type { Recipe } from "@/types/Recipe";
 import RecipeItem from "src/components/RecipeItem";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RecipeStackParamList } from "src/navigation/RecipeStackParamsList";
+import { RecipeStackParamList } from "src/navigation/recipe/RecipeStackParamsList";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllRecipes } from "@/api/fetchRecipes";
 import { COLORS } from "@/types/Colors";
 import { fetchUserData } from "@/api/fetchUserData";
+import Discover from "@/components/svg/Discover";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { BottomTabParamsList } from "src/navigation/tabs/BottomTabParamsList";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
-type Props = NativeStackScreenProps<RecipeStackParamList, "Main">;
+type BottomTabProps = BottomTabScreenProps<BottomTabParamsList, "Home">;
+
+type Props = BottomTabProps;
 
 export default function HomeScreen({ navigation }: Props) {
   const user = fetchUserData();
@@ -51,78 +59,119 @@ export default function HomeScreen({ navigation }: Props) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text
-        style={{
-          fontSize: 18,
-          fontFamily: "MavenPro_500Medium",
-          color: "#a2a2a2",
-          textTransform: "capitalize",
-        }}
-      >
-        Hi, {user.username}
-      </Text>
-      <Text
-        style={{
-          fontSize: 24,
-          fontFamily: "MavenPro_500Medium",
-        }}
-      >
-        What do you want to cook today?
-      </Text>
-      <View style={styles.inputContainer}>
-        <Feather name="search" size={16} color={COLORS.accent} />
-        <TextInput
-          placeholder="Search for your query"
-          placeholderTextColor="grey"
-          value={searchText}
-          onChangeText={setSearchText}
-          style={styles.inputField}
-        />
-        <Ionicons name="menu" size={16} color={COLORS.primary} />
-      </View>
-      <Text
-        style={{
-          fontSize: 18,
-          fontFamily: "MavenPro_500Medium",
-        }}
-      >
-        Most Popular Recipes
-      </Text>
-      {recipes && (
-        <FlatList
-          style={styles.flatlist}
-          data={filteredRecipes}
-          numColumns={2}
-          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-          renderItem={({ item }) => (
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: "white" }}
+      behavior="height"
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text
+          style={{
+            fontSize: 18,
+            fontFamily: "MavenPro_500Medium",
+            color: "#a2a2a2",
+            textTransform: "capitalize",
+          }}
+        >
+          Hi, {user.username}
+        </Text>
+        <Text
+          style={{
+            fontSize: 24,
+            fontFamily: "MavenPro_500Medium",
+          }}
+        >
+          What do you want to cook today?
+        </Text>
+        <View style={styles.inputContainer}>
+          <Feather name="search" size={16} color={COLORS.primary} />
+          <TextInput
+            placeholder="Search for your query"
+            placeholderTextColor="grey"
+            value={searchText}
+            onChangeText={setSearchText}
+            style={styles.inputField}
+          />
+          <Ionicons name="menu" size={16} color={COLORS.primary} />
+        </View>
+        <View
+          style={[
+            styles.highlightContainer,
+            searchText.length !== 0 && { display: "none" },
+          ]}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={styles.highlightSubtitle}>Discover</Text>
+            <Text style={styles.highlightTitle}>
+              Just launched a new feature!
+            </Text>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("RecipeDetails", {
-                  recipe: item,
-                })
-              }
+              style={{
+                width: 80,
+                height: 20,
+                backgroundColor: COLORS.accent,
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 8,
+              }}
             >
-              <RecipeItem {...item} />
+              <Text
+                style={{
+                  fontFamily: "MavenPro_500Medium",
+                  fontSize: 10,
+                  textTransform: "capitalize",
+                  color: "white",
+                }}
+                onPress={() => navigation.jumpTo("Category")}
+              >
+                Find Out
+              </Text>
             </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.recipe_id.toString()}
-        />
-      )}
-    </View>
+          </View>
+          <Discover width={100} height={100} />
+        </View>
+        <Text
+          style={{
+            fontSize: 18,
+            fontFamily: "MavenPro_500Medium",
+          }}
+        >
+          All Recipes
+        </Text>
+        <View style={styles.flatlistContainer}>
+          <FlatList
+            data={filteredRecipes}
+            numColumns={2}
+            scrollEnabled={false}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("Home", {
+                    screen: "RecipeDetails",
+                    params: { recipe: item },
+                    initial: false,
+                  })
+                }
+                style={{ maxWidth: "50%", width: "100%" }}
+              >
+                <RecipeItem {...item} />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.recipe_id.toString()}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  flatlist: {
-    flex: 1,
-    padding: 4,
-  },
   container: {
-    flex: 1,
     backgroundColor: "white",
     paddingHorizontal: 24,
-    paddingVertical: 60,
+    paddingTop: 60,
+    paddingBottom: 50,
     gap: 8,
   },
   inputContainer: {
@@ -148,5 +197,31 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingLeft: 5,
     color: "#949494",
+  },
+  highlightContainer: {
+    width: "100%",
+    backgroundColor: "black",
+    padding: 12,
+    borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: 102,
+  },
+  highlightTitle: {
+    fontSize: 16,
+    color: "white",
+    fontFamily: "MavenPro_500Medium",
+    marginBottom: 8,
+  },
+  highlightSubtitle: {
+    fontSize: 10,
+    fontFamily: "MavenPro_500Medium",
+    color: "#f3f3f3",
+  },
+  flatlistContainer: {
+    flex: 2,
+    marginHorizontal: "auto",
+    width: "100%",
+    gap: 4,
   },
 });

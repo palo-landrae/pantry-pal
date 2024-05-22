@@ -7,12 +7,13 @@ import {
   Image,
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AuthStackParamList } from "src/navigation/AuthStackParamsList";
+import { AuthStackParamList } from "src/navigation/auth/AuthStackParamsList";
 import { signInWithUsernameAndPassword } from "@/auth/AuthActions";
 import { Formik } from "formik";
 import { loginUpValidationSchema } from "src/schema/loginValidationSchema";
 import { Feather } from "@expo/vector-icons";
 import { COLORS } from "@/types/Colors";
+import { useState } from "react";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Login">;
 
@@ -22,6 +23,7 @@ type FormikValues = {
 };
 
 export default function LoginScreen({ navigation }: Props) {
+  const [visible, setVisible] = useState<boolean>(false);
   return (
     <Formik
       initialValues={{ username: "", password: "" }}
@@ -65,10 +67,15 @@ export default function LoginScreen({ navigation }: Props) {
               style={styles.inputField}
               textContentType="password"
               value={values.password}
-              secureTextEntry={true}
+              secureTextEntry={!visible}
               onChangeText={handleChange("password")}
               placeholder="Password"
             />
+            <TouchableOpacity
+              onPress={() => setVisible((prevState) => !prevState)}
+            >
+              <Feather name={visible ? "eye" : "eye-off"} size={14} />
+            </TouchableOpacity>
           </View>
           {!!errors.password && (
             <Text style={styles.error}>{errors.password}</Text>

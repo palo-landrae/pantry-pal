@@ -1,9 +1,12 @@
+import { fetchFilteredRecipeByFood } from "@/api/fetchFilteredRecipeByFood";
+import EmptyFridge from "@/components/EmptyFridge";
 import FindRecipes from "@/components/FindRecipes";
 import FridgeItem from "@/components/FridgeItem";
 import { FoodContext } from "@/lib/FoodContext";
 import { COLORS } from "@/types/Colors";
 import { Food } from "@/types/Food";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
 import {
   FlatList,
@@ -12,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { CategoryStackParamList } from "src/navigation/CategoryStackParamsList";
+import { CategoryStackParamList } from "src/navigation/category/CategoryStackParamsList";
 
 type Props = NativeStackScreenProps<CategoryStackParamList, "FridgeList">;
 
@@ -23,11 +26,20 @@ export default function FridgetListScreen({ navigation }: Props) {
     setFoods(foods.filter((e) => e.food_id !== food.food_id));
   };
 
+  const { data: recipes = [] } = useQuery({
+    queryKey: ["filteredRecipes", foods.map((food) => food.food_id)],
+    queryFn: fetchFilteredRecipeByFood,
+    enabled: foods.length > 0,
+  });
+
+  const handleFindRecipes = async () => {
+    navigation.navigate("FilteredRecipes", { recipes });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Fridge</Text>
       <FlatList
-        style={styles.flatlist}
         data={foods}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -38,8 +50,15 @@ export default function FridgetListScreen({ navigation }: Props) {
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.food_id.toString()}
+        ListEmptyComponent={<EmptyFridge />}
       />
-      <FindRecipes />
+      <TouchableOpacity
+        style={{ width: "100%", height: 40 }}
+        disabled={foods.length === 0}
+        onPress={() => handleFindRecipes()}
+      >
+        <FindRecipes isDisabled={foods.length === 0} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -48,17 +67,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 60,
     paddingHorizontal: 20,
-    backgroundColor: "white",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "white",
   },
   title: {
     fontFamily: "MavenPro_500Medium",
     fontSize: 28,
     paddingVertical: 20,
-  },
-  flatlist: {
-    flex: 1,
   },
   buttonContainer: {
     backgroundColor: COLORS.primary,

@@ -1,11 +1,11 @@
 import { Instruction } from "@/types/Instruction";
 import { Ingredient } from "@/types/Ingredient";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import { RecipeStackParamList } from "src/navigation/RecipeStackParamsList";
+import { RecipeStackParamList } from "src/navigation/recipe/RecipeStackParamsList";
 import { AuthContext } from "@/auth/AuthContext";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchIngredients } from "@/api/fetchIngredients";
 import { fetchInstructions } from "@/api/fetchInstructions";
 import { fetchNutritionalInfos } from "@/api/fetchNutritionalInfos";
@@ -17,7 +17,7 @@ import NutrientItem from "@/components/NutrientItem";
 
 type Props = NativeStackScreenProps<RecipeStackParamList, "RecipeDetails">;
 
-export default function RecipeDetails({ route, navigation }: Props) {
+export default function RecipeDetails({ route }: Props) {
   const { recipe } = route.params;
   const { user } = useContext(AuthContext);
 

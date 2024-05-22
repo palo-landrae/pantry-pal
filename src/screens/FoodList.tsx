@@ -1,6 +1,5 @@
 import { fetchFoodsByCategory } from "@/api/fetchFoodsByCategory";
 import FoodItem from "@/components/FoodItem";
-import ViewFridge from "@/components/ViewFridge";
 import { FoodContext } from "@/lib/FoodContext";
 import { COLORS } from "@/types/Colors";
 import { Food } from "@/types/Food";
@@ -16,11 +15,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { CategoryStackParamList } from "src/navigation/CategoryStackParamsList";
+import { CategoryStackParamList } from "src/navigation/category/CategoryStackParamsList";
 
 type Props = NativeStackScreenProps<CategoryStackParamList, "FoodList">;
 
-export default function FoodListScreen({ route, navigation }: Props) {
+export default function FoodListScreen({ route }: Props) {
   const { category } = route.params;
   const { foods: fridge, setFoods } = useContext(FoodContext);
 
@@ -52,16 +51,6 @@ export default function FoodListScreen({ route, navigation }: Props) {
         )}
         keyExtractor={(item) => item.food_id.toString()}
       />
-      <View style={{ flexDirection: "row", gap: 4 }}>
-        <TouchableOpacity onPress={() => navigation.navigate("FridgeList")}>
-          <ViewFridge />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonContainer, { backgroundColor: COLORS.accent }]}
-        >
-          <Text style={styles.buttonText}>Find Recipes</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
