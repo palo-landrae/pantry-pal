@@ -19,7 +19,7 @@ module.exports = function (api) {
           ".tsx",
         ]
       }],
-      ["inline-dotenv"]
+      ["inline-dotenv", {path: ".env"}]
     ]
   };
 };
